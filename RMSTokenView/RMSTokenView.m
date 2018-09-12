@@ -80,16 +80,16 @@
         }
     }
     [self.constraintManager setupheightConstraintFromOutlet:self.heightConstraint];
-
+    
     self.content = [[UIView alloc] initWithFrame:self.bounds];
     [self addSubview:self.content];
     [self.constraintManager setupContentViewConstraints:self.content];
-
+    
     self.lineView = [[UIView alloc] init];
     self.lineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
     [self.content addSubview:self.lineView];
     [self.constraintManager setupLineViewConstraints:self.lineView];
-
+    
     RMSTextField *textField = [[RMSTextField alloc] init];
     textField.backspaceDelegate = self;
     textField.delegate = self;
@@ -100,13 +100,13 @@
     [self.content addSubview:textField];
     [self.constraintManager setupConstraintsOnTextField:textField];
     [[self.tokenLines lastObject] addObject:textField];
-
+    
     self.summaryLabel = [[UILabel alloc] init];
     self.summaryLabel.backgroundColor = [UIColor clearColor];
     self.summaryLabel.font = [UIFont systemFontOfSize:15];
     [self.content addSubview:self.summaryLabel];
     [self.constraintManager setupConstraintsOnSummaryLabel:self.summaryLabel];
-
+    
     [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewSelected:)]];
 }
 
@@ -123,8 +123,8 @@
             (textField.selectedTextRange.empty &&
              [textField offsetFromPosition:textField.beginningOfDocument
                                 toPosition:textField.selectedTextRange.start] == 0)) {
-                [self selectLastToken];
-            }
+                 [self selectLastToken];
+             }
     }
 }
 
@@ -141,20 +141,20 @@
             return;
         }
     }
-
+    
     if ([self.tokenDelegate respondsToSelector:@selector(tokenView:willPresentTokenWithText:)]) {
         NSString *transformedText = [self.tokenDelegate tokenView:self willPresentTokenWithText:tokenText];
         if (transformedText) {
             tokenText = transformedText;
         }
     }
-
+    
     UIButton *tokenView = [UIButton buttonWithType:UIButtonTypeCustom];
     tokenView.contentEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 4);
     tokenView.adjustsImageWhenHighlighted = NO;
-
+    
     UIControlState controlStates[3] = {UIControlStateNormal, UIControlStateHighlighted, UIControlStateSelected};
-
+    
     for (int idx = 0; idx < 3; idx++) {
         UIControlState controlState = controlStates[idx];
         [tokenView setBackgroundImage:[self tokenBackgroundImageForState:controlState withTokenText:tokenText]
@@ -163,13 +163,13 @@
                              forState:controlState];
     }
     [tokenView setTitle:tokenText forState:UIControlStateNormal];
-
+    
     [tokenView addTarget:self action:@selector(selectedToken:) forControlEvents:UIControlEventTouchUpInside];
     [self.content addSubview:tokenView];
     [self.constraintManager setupConstraintsOnToken:tokenView];
-
+    
     [self.tokenViews addObject:tokenView];
-
+    
     if (!self.textField.editing) {
         tokenView.alpha = 0.0;
     }
@@ -179,7 +179,7 @@
     if ([self.tokenDelegate respondsToSelector:@selector(tokenView:didAddTokenWithText:)]) {
         [self.tokenDelegate tokenView:self didAddTokenWithText:tokenText];
     }
-
+    
     [self updatePlaceholder];
     [self updateSummary];
     [self resetLines];
@@ -193,15 +193,15 @@
             break;
         }
     }
-
+    
     if (buttonToRemove != nil) {
         [buttonToRemove removeFromSuperview];
         [self.tokenViews removeObject:buttonToRemove];
-
+        
         if ([self.tokenDelegate respondsToSelector:@selector(tokenView:didRemoveTokenWithText:)]) {
             [self.tokenDelegate tokenView:self didRemoveTokenWithText:tokenText];
         }
-
+        
         [self updatePlaceholder];
         [self updateSummary];
         [self resetLines];
@@ -220,7 +220,7 @@
 
 - (void)selectTokenWithText:(NSString *)tokenText {
     if (![[self.selectedToken titleForState:UIControlStateNormal] isEqualToString:tokenText]) {
-
+        
         self.selectedToken = nil;
         for (UIButton *tokenButton in self.tokenViews) {
             if ([[tokenButton titleForState:UIControlStateNormal] isEqualToString:tokenText]) {
@@ -228,20 +228,20 @@
                 break;
             }
         }
-
+        
         [self updateTextField];
         if (self.selectedToken) {
             [self.textField becomeFirstResponder];
         }
     }
-
+    
     for (UIButton *tokenView in self.tokenViews) {
         BOOL selected = (tokenView == self.selectedToken);
         if (tokenView.selected != selected) {
             tokenView.selected = selected;
         }
     }
-
+    
     if (tokenText && [self.tokenDelegate respondsToSelector:@selector(tokenView:didSelectTokenWithText:)]) {
         [self.tokenDelegate tokenView:self didSelectTokenWithText:tokenText];
     }
@@ -256,7 +256,7 @@
     }];
     
     [self.tokenViews removeAllObjects];
-
+    
     [self updatePlaceholder];
     [self updateSummary];
     [self resetLines];
@@ -275,12 +275,12 @@
 - (void)setSearching:(BOOL)searching {
     if (_searching != searching) {
         _searching = searching;
-
+        
         [self updateConstraints];
         [self.superview layoutIfNeeded];
-
+        
         [self scrollToBottom];
-
+        
         if (_searching) {
             self.scrollEnabled = NO;
             self.lineView.hidden = NO;
@@ -310,14 +310,14 @@
 - (void)updateSummary {
     if ([self.tokenViews count] > 0) {
         NSMutableString *summary = [[NSMutableString alloc] init];
-
+        
         for (UIButton *tokenView in self.tokenViews) {
             [summary appendString:[tokenView titleForState:UIControlStateNormal]];
             if (tokenView != [self.tokenViews lastObject]) {
                 [summary appendString:@", "];
             }
         }
-
+        
         self.summaryLabel.text = summary;
         self.summaryLabel.textColor = [UIColor darkTextColor];
     } else {
@@ -334,23 +334,23 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     [self.content layoutSubviews];
-
+    
     NSMutableArray *lastLine = [self.tokenLines lastObject];
     [[lastLine copy] enumerateObjectsUsingBlock:^(UIView *tokenView, NSUInteger index, BOOL *stop) {
         if (index != 0) {
             if (tokenView.intrinsicContentSize.width > tokenView.bounds.size.width || (tokenView == self.textField && tokenView.bounds.size.width < 100)) {
                 [self.tokenLines addObject:[[lastLine subarrayWithRange:NSMakeRange(index, [lastLine count] - index)] mutableCopy]];
                 [lastLine removeObjectsInArray:[self.tokenLines lastObject]];
-
+                
                 [self updateConstraints];
                 [self layoutSubviews];
-
+                
                 *stop = YES;
             }
         }
     }];
-
-
+    
+    
     /* Content is overflowing horizontally */
     if (self.frame.size.width != self.contentSize.width) {
         self.contentSize = CGSizeMake(self.frame.size.width, self.contentSize.height);
@@ -359,19 +359,19 @@
         [self layoutSubviews];
         return;
     }
-
+    
     [self showScrollBarsIfNecessary];
 }
 
 - (void)updateConstraints {
     [super updateConstraints];
-
+    
     self.constraintManager.maxHeight = self.maxHeight;
     [self.constraintManager updateConstraintsForTokenLines:self.tokenLines
                                                andLineView:self.lineView
                                         withTextFieldFocus:[self.textField isFirstResponder]
                                                isSearching:self.searching];
-
+    
     if (self.searching) {
         [self scrollToBottom];
     }
@@ -404,9 +404,9 @@
     if ([self.tokenLines[0] count] > 0 && self.bounds.size.width != self.lastKnownSize.width) {
         [self resetLines];
     }
-
+    
     [self showScrollBarsIfNecessary];
-
+    
     if (self.selectedToken == nil && (self.bounds.size.width != self.lastKnownSize.width || self.bounds.size.height != self.lastKnownSize.height)) {
         [self scrollToBottom];
     }
@@ -469,10 +469,10 @@
         }
         self.textField.alpha = 1.0;
         self.summaryLabel.alpha = 0.0;
-
+        
         [self setNeedsUpdateConstraints];
         [self.superview layoutIfNeeded];
-
+        
         [self scrollToBottom];
     } completion:nil];
 }
@@ -482,28 +482,53 @@
         [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
             self.scrollEnabled = NO;
             self.lineView.hidden = NO;
-
+            
             for (UIView *tokenView in self.tokenViews) {
                 tokenView.alpha = 0.0;
             }
             self.summaryLabel.alpha = 1.0;
-
+            
             [self setNeedsUpdateConstraints];
             [self.superview layoutIfNeeded];
-
+            
             self.contentOffset = CGPointMake(0.0, 0.0);
         } completion:nil];
     });
     return YES;
 }
 
+- (BOOL)checkString:(NSString *)string {
+    
+    NSString *const expression = @"^[a-zA-Z0-9]+([._-]+[[a-zA-Z0-9]]+)*?@[a-zA-Z]{2,}+\\.[a-zA-Z]+$"; //insert yours
+    NSError *error = nil;
+    
+    NSRegularExpression * const regExpr =
+    [NSRegularExpression regularExpressionWithPattern:expression
+                                              options:NSRegularExpressionCaseInsensitive
+                                                error:&error];
+    
+    NSTextCheckingResult * const matchResult = [regExpr firstMatchInString:string
+                                                                   options:0 range:NSMakeRange(0, [string length])];
+    
+    return matchResult ? YES : NO;
+}
+
 #pragma mark - Token Buttons
 
 - (UIImage *)tokenBackgroundImageForState:(UIControlState)state withTokenText:(NSString *)tokenText {
     UIColor *topColor; UIColor *bottomColor; UIColor *strokeColor;
-
+    BOOL isValdEmail = [self checkString:tokenText];
+    
+    UIColor* tempTopColor;
+    if (isValdEmail) {
+        tempTopColor = [UIColor colorWithRed:0.87f green:0.91f blue:0.96f alpha:1.0f];
+    }
+    else {
+        tempTopColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:1.0f];
+    }
+    
     if (state == UIControlStateNormal) {
-        topColor = [UIColor colorWithRed:0.87f green:0.91f blue:0.96f alpha:1.0f];
+        topColor = tempTopColor;
         bottomColor = [UIColor colorWithRed:0.75f green:0.82f blue:0.92f alpha:1.0f];
         strokeColor = [UIColor colorWithRed:0.64f green:0.73f blue:0.88f alpha:1.00f];
     } else if (state == UIControlStateHighlighted || state == UIControlStateSelected) {
@@ -515,24 +540,24 @@
 }
 
 - (NSDictionary *)titleTextAttributesForState:(UIControlState)state {
-
+    
     if (state == UIControlStateNormal) {
         return @{
-                NSFontAttributeName: [UIFont systemFontOfSize:15.0],
-                NSForegroundColorAttributeName: [UIColor blackColor],
-        };
+                 NSFontAttributeName: [UIFont systemFontOfSize:15.0],
+                 NSForegroundColorAttributeName: [UIColor blackColor],
+                 };
     } else if (state == UIControlStateHighlighted) {
         return @{
-                NSFontAttributeName: [UIFont systemFontOfSize:15.0],
-                NSForegroundColorAttributeName: [UIColor whiteColor],
-        };
+                 NSFontAttributeName: [UIFont systemFontOfSize:15.0],
+                 NSForegroundColorAttributeName: [UIColor whiteColor],
+                 };
     } else if (state == UIControlStateSelected) {
         return @{
-                NSFontAttributeName: [UIFont systemFontOfSize:15.0],
-                NSForegroundColorAttributeName: [UIColor whiteColor],
-        };
+                 NSFontAttributeName: [UIFont systemFontOfSize:15.0],
+                 NSForegroundColorAttributeName: [UIColor whiteColor],
+                 };
     }
-
+    
     return nil;
 }
 
@@ -544,18 +569,18 @@
     /* Draw Fill Gradient */
     CGContextAddPath(context, [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:self.tokenViewBorderRadius].CGPath);
     CGContextClip(context);
-
+    
     if (self.needsGradient) {
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         CGFloat locations[] = {0.0, 1.0};
         NSArray *colors = @[(__bridge id)topColor.CGColor, (__bridge id)bottomColor.CGColor];
         CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
-
+        
         CGPoint startPoint = CGPointMake(rect.size.width / 2.0, 0);
         CGPoint endPoint = CGPointMake(rect.size.width / 2.0, rect.size.height);
-
+        
         CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-
+        
         CGGradientRelease(gradient);
         CGColorSpaceRelease(colorSpace);
     } else {
@@ -568,7 +593,7 @@
     CGContextSetStrokeColorWithColor(context, strokeColor.CGColor);
     CGContextSetLineWidth(context, 0.5);
     CGContextStrokePath(context);
-
+    
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return [image resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 14)];
@@ -595,7 +620,7 @@
 {
     self.textField.text = text;
     self.searching = !!text;
-
+    
     if ([self.tokenDelegate respondsToSelector:@selector(tokenView:didChangeText:)]) {
         [self.tokenDelegate tokenView:self didChangeText:self.text];
     }
