@@ -239,6 +239,11 @@
 				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "RoleModel Software";
+				TargetAttributes = {
+					1C9ACDC517D243B100581B8F = {
+						DevelopmentTeam = NYDZ4CJT6W;
+					};
+				};
 			};
 			buildConfigurationList = 1C9ACDC117D243B100581B8F /* Build configuration list for PBXProject "RMSTokenView" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -439,6 +444,7 @@
 		1C9ACDFF17D243B200581B8F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = NYDZ4CJT6W;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RMSTokenView/RMSTokenView-Prefix.pch";
 				INFOPLIST_FILE = "RMSTokenView/RMSTokenView-Info.plist";
@@ -451,6 +457,7 @@
 		1C9ACE0017D243B200581B8F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = NYDZ4CJT6W;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RMSTokenView/RMSTokenView-Prefix.pch";
 				INFOPLIST_FILE = "RMSTokenView/RMSTokenView-Info.plist";

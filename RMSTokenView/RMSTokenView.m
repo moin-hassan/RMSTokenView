@@ -478,22 +478,22 @@
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.scrollEnabled = NO;
-            self.lineView.hidden = NO;
-            
-            for (UIView *tokenView in self.tokenViews) {
-                tokenView.alpha = 0.0;
-            }
-            self.summaryLabel.alpha = 1.0;
-            
-            [self setNeedsUpdateConstraints];
-            [self.superview layoutIfNeeded];
-            
-            self.contentOffset = CGPointMake(0.0, 0.0);
-        } completion:nil];
-    });
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+//            self.scrollEnabled = NO;
+//            self.lineView.hidden = NO;
+//            
+//            for (UIView *tokenView in self.tokenViews) {
+//                tokenView.alpha = 0.0;
+//            }
+//            self.summaryLabel.alpha = 1.0;
+//            
+//            [self setNeedsUpdateConstraints];
+//            [self.superview layoutIfNeeded];
+//            
+//            self.contentOffset = CGPointMake(0.0, 0.0);
+//        } completion:nil];
+//    });
     return YES;
 }
 
